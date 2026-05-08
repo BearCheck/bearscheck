@@ -55,12 +55,37 @@ export default function Step4Historique() {
             </div>
           )}
 
+          <div className="flex items-center justify-center mb-3">
+            <div className={`px-6 py-2 rounded-2xl text-center ${
+              bm <= 0.80 ? "bg-green-50 border border-green-200" :
+              bm <= 1.00 ? "bg-[#F5E6C8] border border-[#E5D8BC]" :
+              bm <= 1.50 ? "bg-orange-50 border border-orange-200" :
+              "bg-red-50 border border-red-200"
+            }`}>
+              <p className={`text-3xl font-bold font-[family-name:var(--font-jetbrains)] ${
+                bm <= 0.80 ? "text-green-600" :
+                bm <= 1.00 ? "text-[#C9A84C]" :
+                bm <= 1.50 ? "text-orange-500" :
+                "text-red-600"
+              }`}>
+                {bm.toFixed(2)}
+              </p>
+              <p className={`text-xs font-medium mt-0.5 ${
+                bm <= 0.80 ? "text-green-600" :
+                bm <= 1.00 ? "text-[#C9A84C]" :
+                bm <= 1.50 ? "text-orange-500" :
+                "text-red-600"
+              }`}>
+                {bm < 1.00 ? "Bonus" : bm === 1.00 ? "Neutre" : "Malus"}
+              </p>
+            </div>
+          </div>
+
           <Slider
             min={50}
             max={350}
             step={5}
             value={Math.round(bm * 100)}
-            displayValue={bm.toFixed(2)}
             onChange={(e) => updateFormData({ bonusMalus: Number(e.target.value) / 100 })}
           />
           <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
