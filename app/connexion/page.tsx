@@ -112,7 +112,7 @@ export default function ConnexionPage() {
 
             <p className="text-center text-sm text-[#6B7280] mt-5">
               Pas encore de compte ?{" "}
-              <Link href="/comparer" className="text-[#C9A84C] hover:underline font-medium">
+              <Link href="/inscription" className="text-[#C9A84C] hover:underline font-medium">
                 Créer un compte
               </Link>
             </p>
