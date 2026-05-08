@@ -148,3 +148,4 @@ npx playwright test
 2. Ajoutez les variables d'environnement dans le dashboard Vercel
 3. Configurez PostgreSQL (Supabase recommandé)
 4. Déployez avec `git push`
+# bearscheck
