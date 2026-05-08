@@ -153,16 +153,16 @@ export default function CookieBanner() {
           {/* Footer */}
           <div className="flex flex-col sm:flex-row gap-2 px-6 py-4 border-t border-[#E5D8BC] bg-[#FAFAFA]">
             <button
-              onClick={() => save(prefs)}
+              onClick={() => save({ analytics: true, affiliate: true })}
               className="flex-1 py-2.5 px-4 bg-[#C9A84C] text-white text-sm font-semibold rounded-xl hover:bg-[#b8943f] transition-colors"
             >
-              Enregistrer mes choix
+              Tout accepter
             </button>
             <button
-              onClick={() => save({ analytics: true, affiliate: true })}
+              onClick={() => save(prefs)}
               className="flex-1 py-2.5 px-4 border border-[#C9A84C] text-[#C9A84C] text-sm font-semibold rounded-xl hover:bg-[#F5E6C8] transition-colors"
             >
-              Tout accepter
+              Enregistrer mes choix
             </button>
           </div>
         </div>
