@@ -1,11 +1,39 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import BearLogo from "@/components/ui/BearLogo";
+import { CheckCircle2 } from "lucide-react";
 
 export default function MotDePasseOubliePage() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) { setError("Veuillez entrer votre adresse email"); return; }
+    setLoading(true);
+    setError("");
+    try {
+      await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setSent(true);
+    } catch {
+      setError("Une erreur est survenue, réessayez.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -20,30 +48,43 @@ export default function MotDePasseOubliePage() {
           </div>
 
           <div className="bg-white border border-[#E5D8BC] rounded-2xl p-8 shadow-sm">
-            <form className="flex flex-col gap-5">
-              <Input
-                label="Adresse email"
-                type="email"
-                placeholder="votre@email.fr"
-                autoComplete="email"
-              />
-              <Button type="submit" className="w-full">Envoyer le lien →</Button>
-            </form>
+            {sent ? (
+              <div className="flex flex-col items-center gap-4 py-4 text-center">
+                <CheckCircle2 className="h-12 w-12 text-green-500" />
+                <h2 className="text-lg font-bold text-[#1A1A1A]">Email envoyé !</h2>
+                <p className="text-sm text-[#6B7280]">
+                  Si un compte existe avec <strong>{email}</strong>, vous recevrez un lien dans quelques minutes. Vérifiez aussi vos spams.
+                </p>
+                <Link href="/connexion" className="text-[#C9A84C] hover:underline text-sm font-medium">
+                  Retour à la connexion
+                </Link>
+              </div>
+            ) : (
+              <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+                <Input
+                  label="Adresse email"
+                  type="email"
+                  placeholder="votre@email.fr"
+                  autoComplete="email"
+                  value={email}
+                  error={error}
+                  onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                />
+                <Button type="submit" className="w-full" loading={loading}>
+                  Envoyer le lien →
+                </Button>
+              </form>
+            )}
 
-            <p className="text-center text-sm text-[#6B7280] mt-6">
-              Vous vous souvenez ?{" "}
-              <Link href="/connexion" className="text-[#C9A84C] hover:underline font-medium">
-                Se connecter
-              </Link>
-            </p>
+            {!sent && (
+              <p className="text-center text-sm text-[#6B7280] mt-6">
+                Vous vous souvenez ?{" "}
+                <Link href="/connexion" className="text-[#C9A84C] hover:underline font-medium">
+                  Se connecter
+                </Link>
+              </p>
+            )}
           </div>
-
-          <p className="text-center text-xs text-[#9CA3AF] mt-4">
-            Si vous n&apos;avez pas de compte,{" "}
-            <Link href="/comparer" className="text-[#C9A84C] hover:underline">
-              commencez une comparaison gratuitement
-            </Link>.
-          </p>
         </div>
       </main>
       <Footer />
