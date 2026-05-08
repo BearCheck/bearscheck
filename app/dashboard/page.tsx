@@ -1,14 +1,13 @@
 import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { BarChart3, Clock, Car, LogOut } from "lucide-react";
+import { BarChart3, Clock, Car, LogOut, Settings } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { BearImage } from "@/components/ui/BearLogo";
-import ChangePasswordCard from "./ChangePasswordCard";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -37,12 +36,20 @@ export default async function DashboardPage() {
                 </h1>
               </div>
             </div>
-            <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
-              <button type="submit" className="flex items-center gap-2 text-sm text-[#6B7280] hover:text-red-500 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
-                <LogOut className="h-4 w-4" />
-                Se déconnecter
-              </button>
-            </form>
+            <div className="flex items-center gap-2">
+              <Link href="/dashboard/parametres">
+                <button className="flex items-center gap-2 text-sm text-[#6B7280] hover:text-[#C9A84C] transition-colors px-3 py-2 rounded-lg hover:bg-[#F5E6C8]">
+                  <Settings className="h-4 w-4" />
+                  Paramètres
+                </button>
+              </Link>
+              <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
+                <button type="submit" className="flex items-center gap-2 text-sm text-[#6B7280] hover:text-red-500 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
+                  <LogOut className="h-4 w-4" />
+                  Se déconnecter
+                </button>
+              </form>
+            </div>
           </div>
 
           {/* Stats */}
@@ -77,8 +84,6 @@ export default async function DashboardPage() {
             </Link>
           </Card>
 
-          {/* Paramètres du compte */}
-          <ChangePasswordCard />
         </div>
       </main>
       <Footer />
