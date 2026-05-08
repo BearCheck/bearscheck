@@ -19,12 +19,13 @@ export default function MentionsLegalesPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-[#1A1A1A] mb-3">1. Éditeur du site</h2>
             <p className="text-[#6B7280]">
-              BearsCheck est édité par [RAISON SOCIALE À COMPLÉTER], société [FORME JURIDIQUE] au capital de [MONTANT] €,
-              immatriculée au RCS de [VILLE] sous le numéro [NUMÉRO SIRET].
-              <br /><br />
-              Siège social : [ADRESSE COMPLÈTE]<br />
-              Email : contact@bearscheck.fr<br />
-              Téléphone : [NUMÉRO]
+              BearsCheck est édité par :<br /><br />
+              <strong className="text-[#1A1A1A]">Paul PACKE</strong><br />
+              Entreprise individuelle<br />
+              SIRET : 944 810 696 00012<br />
+              Établissement actif depuis le 23/05/2025<br /><br />
+              Siège social : 12 Rue de l&apos;Octroi, 54000 Nancy<br />
+              Email : <a href="mailto:info@bearscheck.com" className="text-[#C9A84C] hover:underline">info@bearscheck.com</a>
             </p>
           </section>
 
@@ -61,7 +62,7 @@ export default function MentionsLegalesPage() {
             </p>
           </section>
 
-          <p className="text-xs text-[#9CA3AF] mt-8">Dernière mise à jour : mai 2026</p>
+          <p className="text-xs text-[#9CA3AF] mt-8">Dernière mise à jour : mai 2025</p>
         </div>
       </main>
       <Footer />

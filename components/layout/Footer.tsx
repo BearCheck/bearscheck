@@ -12,6 +12,15 @@ export default function Footer() {
             <p className="mt-3 text-xs text-[#6B7280] leading-relaxed">
               BearsCheck est un comparateur d&apos;information indépendant. Nous ne sommes pas un assureur.
             </p>
+            <a
+              href="mailto:info@bearscheck.com"
+              className="mt-3 inline-flex items-center gap-1.5 text-xs text-[#C9A84C] hover:underline"
+            >
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              info@bearscheck.com
+            </a>
           </div>
 
           {/* Links */}

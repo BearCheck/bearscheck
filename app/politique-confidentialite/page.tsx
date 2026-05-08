@@ -19,7 +19,7 @@ export default function PolitiqueConfidentialitePage() {
           {[
             {
               title: "1. Responsable du traitement",
-              content: "BearsCheck ([RAISON SOCIALE]) est responsable du traitement de vos données personnelles. Contact DPO : dpo@bearscheck.fr"
+              content: "BearsCheck est édité par Paul PACKE, entreprise individuelle (SIRET 944 810 696 00012), 12 Rue de l'Octroi, 54000 Nancy. Contact : info@bearscheck.com"
             },
             {
               title: "2. Données collectées",
@@ -43,7 +43,7 @@ export default function PolitiqueConfidentialitePage() {
             },
             {
               title: "7. Vos droits",
-              content: "Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, de portabilité et d'opposition. Pour l'exercer : dpo@bearscheck.fr ou via le bouton \"Supprimer mon compte\" dans votre espace personnel. En cas de litige, vous pouvez saisir la CNIL (cnil.fr)."
+              content: "Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, de portabilité et d'opposition. Pour l'exercer : info@bearscheck.com ou via le bouton \"Supprimer mon compte\" dans votre espace personnel. En cas de litige, vous pouvez saisir la CNIL (cnil.fr)."
             },
             {
               title: "8. Cookies",
@@ -56,7 +56,7 @@ export default function PolitiqueConfidentialitePage() {
             </section>
           ))}
 
-          <p className="text-xs text-[#9CA3AF] mt-8">Dernière mise à jour : mai 2026</p>
+          <p className="text-xs text-[#9CA3AF] mt-8">Dernière mise à jour : mai 2025</p>
         </div>
       </main>
       <Footer />
