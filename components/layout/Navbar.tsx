@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 import BearLogo from "@/components/ui/BearLogo";
 import Button from "@/components/ui/Button";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
+  const isAdmin = (session?.user as { role?: string })?.role === "ADMIN";
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5D8BC]">
@@ -26,12 +29,36 @@ export default function Navbar() {
           <Link href="/pro/inscription" className="text-sm text-[#6B7280] hover:text-[#C9A84C] transition-colors">
             Espace pro
           </Link>
-          <Link href="/connexion">
-            <Button variant="outline" size="sm">Se connecter</Button>
-          </Link>
-          <Link href="/comparer">
-            <Button size="sm">Comparer →</Button>
-          </Link>
+
+          {session ? (
+            <div className="flex items-center gap-3">
+              {isAdmin && (
+                <Link href="/admin">
+                  <Button variant="outline" size="sm" className="border-red-200 text-red-600 hover:bg-red-50">
+                    Admin
+                  </Button>
+                </Link>
+              )}
+              <Link href="/dashboard">
+                <Button variant="outline" size="sm">Mon compte</Button>
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="text-sm text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+              >
+                Déconnexion
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link href="/connexion">
+                <Button variant="outline" size="sm">Se connecter</Button>
+              </Link>
+              <Link href="/comparer">
+                <Button size="sm">Comparer →</Button>
+              </Link>
+            </div>
+          )}
         </nav>
 
         {/* Mobile menu button */}
@@ -57,12 +84,33 @@ export default function Navbar() {
             <Link href="/comment-ca-marche" className="text-sm text-[#6B7280] py-1" onClick={() => setMenuOpen(false)}>Comment ça marche</Link>
             <Link href="/assureurs" className="text-sm text-[#6B7280] py-1" onClick={() => setMenuOpen(false)}>Nos assureurs</Link>
             <Link href="/pro/inscription" className="text-sm text-[#6B7280] py-1" onClick={() => setMenuOpen(false)}>Espace pro</Link>
-            <Link href="/connexion" onClick={() => setMenuOpen(false)}>
-              <Button variant="outline" size="sm" className="w-full">Se connecter</Button>
-            </Link>
-            <Link href="/comparer" onClick={() => setMenuOpen(false)}>
-              <Button size="sm" className="w-full">Comparer →</Button>
-            </Link>
+            {session ? (
+              <>
+                {isAdmin && (
+                  <Link href="/admin" onClick={() => setMenuOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full border-red-200 text-red-600">Admin</Button>
+                  </Link>
+                )}
+                <Link href="/dashboard" onClick={() => setMenuOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Mon compte</Button>
+                </Link>
+                <button
+                  onClick={() => { setMenuOpen(false); signOut({ callbackUrl: "/" }); }}
+                  className="text-sm text-[#9CA3AF] py-1 text-left"
+                >
+                  Déconnexion
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/connexion" onClick={() => setMenuOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Se connecter</Button>
+                </Link>
+                <Link href="/comparer" onClick={() => setMenuOpen(false)}>
+                  <Button size="sm" className="w-full">Comparer →</Button>
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       )}
