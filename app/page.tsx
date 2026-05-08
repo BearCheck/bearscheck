@@ -218,11 +218,11 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {STEPS.map((step, index) => (
-                <div key={step.step} className="relative flex flex-col items-center text-center">
+                <div key={step.step} className="relative flex flex-col items-center text-center h-full">
                   {index < STEPS.length - 1 && (
                     <div className="hidden lg:block absolute top-8 left-[60%] w-full h-px bg-[#E5D8BC] z-0" aria-hidden="true" />
                   )}
-                  <div className="relative z-10 flex flex-col items-center w-full bg-white rounded-2xl p-6 shadow-sm border border-[#E5D8BC] card-lift">
+                  <div className="relative z-10 flex flex-col items-center w-full h-full bg-white rounded-2xl p-6 shadow-sm border border-[#E5D8BC] card-lift">
                     <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#C9A84C] shadow-md mb-5">
                       {step.icon}
                     </div>
