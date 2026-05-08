@@ -1,0 +1,131 @@
+"use client";
+
+import { useState } from "react";
+import { CheckCircle2, Circle, AlertTriangle, AlertOctagon } from "lucide-react";
+import StepWrapper from "./StepWrapper";
+import OptionCard from "@/components/ui/OptionCard";
+import Slider from "@/components/ui/Slider";
+import { useTunnelStore } from "@/store/tunnelStore";
+
+const SINISTRES = [
+  { value: "aucun", icon: <CheckCircle2 className="h-5 w-5" />, label: "Aucun sinistre", description: "Conduite sans incident" },
+  { value: "non_responsable", icon: <Circle className="h-5 w-5" />, label: "Sinistre non responsable", description: "Accident dont je ne suis pas responsable" },
+  { value: "1_responsable", icon: <AlertTriangle className="h-5 w-5" />, label: "1 sinistre responsable", description: "1 accident responsable dans les 3 ans" },
+  { value: "2plus", icon: <AlertOctagon className="h-5 w-5" />, label: "2 sinistres ou plus", description: "Plusieurs accidents dans les 3 ans" },
+];
+
+export default function Step4Historique() {
+  const { formData, updateFormData, nextStep, prevStep } = useTunnelStore();
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const bm = formData.bonusMalus ?? 1.0;
+
+  const canNext = formData.sinistres;
+
+  return (
+    <StepWrapper
+      title="Historique de conduite"
+      subtitle="Ces informations permettent d'affiner votre tarification."
+      onNext={nextStep}
+      onPrev={prevStep}
+      nextDisabled={!canNext}
+    >
+      <div className="flex flex-col gap-6">
+        {/* Bonus-malus */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <p className="text-sm font-medium text-[#1A1A1A]">Votre coefficient bonus-malus</p>
+            <button
+              type="button"
+              className="text-[#C9A84C] hover:text-[#b8943f] transition-colors"
+              onClick={() => setShowTooltip(!showTooltip)}
+              aria-expanded={showTooltip}
+              aria-label="Qu'est-ce que le bonus-malus ?"
+            >
+              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+
+          {showTooltip && (
+            <div className="mb-4 p-4 bg-[#F5E6C8] border border-[#E5D8BC] rounded-xl text-sm text-[#6B7280]">
+              <strong className="text-[#1A1A1A] block mb-1">Le bonus-malus</strong>
+              Le coefficient de réduction-majoration (CRM) part de <strong>1.00</strong> à votre 1er contrat. Il descend jusqu&apos;à <strong>0.50</strong> (bonus maximum) si vous conduisez sans sinistre responsable, et monte jusqu&apos;à <strong>3.50</strong> (malus) en cas d&apos;accidents. Il figure sur votre relevé d&apos;information.
+            </div>
+          )}
+
+          <Slider
+            min={50}
+            max={350}
+            step={5}
+            value={Math.round(bm * 100)}
+            displayValue={bm.toFixed(2)}
+            onChange={(e) => updateFormData({ bonusMalus: Number(e.target.value) / 100 })}
+          />
+          <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
+            <span>0.50 — Bonus max</span>
+            <span>1.00 — Neutre</span>
+            <span>3.50 — Malus max</span>
+          </div>
+        </div>
+
+        {/* Sinistres */}
+        <div>
+          <p className="text-sm font-medium text-[#1A1A1A] mb-3">Sinistres dans les 3 dernières années</p>
+          <div className="flex flex-col gap-2">
+            {SINISTRES.map((opt) => (
+              <OptionCard
+                key={opt.value}
+                value={opt.value}
+                selected={formData.sinistres === opt.value}
+                onSelect={(v) => updateFormData({ sinistres: v as typeof formData.sinistres })}
+                icon={opt.icon}
+                label={opt.label}
+                description={opt.description}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Permis suspendu */}
+        <div>
+          <p className="text-sm font-medium text-[#1A1A1A] mb-3">Votre permis a-t-il été suspendu ou annulé ?</p>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { value: "false", label: "Jamais suspendu" },
+              { value: "true", label: "Suspendu ou annulé" },
+            ].map((opt) => (
+              <OptionCard
+                key={opt.value}
+                value={opt.value}
+                selected={String(formData.permisSuspendu ?? false) === opt.value}
+                onSelect={(v) => updateFormData({ permisSuspendu: v === "true" })}
+                label={opt.label}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Résilié */}
+        <div>
+          <p className="text-sm font-medium text-[#1A1A1A] mb-3">Avez-vous été résilié par un assureur ?</p>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { value: "false", label: "Non" },
+              { value: "true", label: "Oui" },
+            ].map((opt) => (
+              <OptionCard
+                key={opt.value}
+                value={opt.value}
+                selected={String(formData.resilieParAssureur ?? false) === opt.value}
+                onSelect={(v) => updateFormData({ resilieParAssureur: v === "true" })}
+                label={opt.label}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </StepWrapper>
+  );
+}

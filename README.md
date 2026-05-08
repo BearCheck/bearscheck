@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BearsCheck — Comparateur d'assurance auto
 
-## Getting Started
+> Comparez. Choisissez. Roulez.
 
-First, run the development server:
+BearsCheck est un comparateur d'assurance auto professionnel pour le marché français, développé avec Next.js 14+, TypeScript et Tailwind CSS.
 
+---
+
+## Installation rapide
+
+### Prérequis
+- Node.js 18 ou supérieur
+- Une base de données PostgreSQL (locale ou cloud)
+
+### Étapes
+
+**1. Installer les dépendances**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**2. Configurer les variables d'environnement**
+```bash
+cp .env.example .env.local
+```
+Ouvrez `.env.local` et remplissez les valeurs (voir section Configuration).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**3. Initialiser la base de données**
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**4. Lancer le serveur de développement**
+```bash
+npm run dev
+```
+Ouvrez http://localhost:3000 dans votre navigateur.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Variables d'environnement requises
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable | Description | Où l'obtenir |
+|----------|-------------|--------------|
+| `DATABASE_URL` | URL PostgreSQL | Supabase, Railway, ou local |
+| `NEXTAUTH_SECRET` | Clé secrète auth | `openssl rand -base64 32` |
+| `NEXTAUTH_URL` | URL de l'app | `http://localhost:3000` en dev |
+| `RESEND_API_KEY` | Envoi d'emails | resend.com |
 
-## Deploy on Vercel
+### Variables optionnelles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Variable | Description |
+|----------|-------------|
+| `GOOGLE_CLIENT_ID/SECRET` | Connexion Google OAuth |
+| `UPSTASH_REDIS_REST_URL/TOKEN` | Rate limiting (Upstash) |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Structure du projet
+
+```
+bearscheck/
+├── app/                    # Pages (Next.js App Router)
+│   ├── page.tsx            # Landing page
+│   ├── comparer/           # Tunnel de comparaison (9 étapes)
+│   ├── connexion/          # Authentification utilisateur
+│   ├── pro/inscription/    # Inscription garage
+│   ├── mentions-legales/   # Page légale
+│   ├── politique-confidentialite/
+│   ├── cgu/
+│   └── cgv/
+├── components/
+│   ├── ui/                 # Design system (Button, Card, Input...)
+│   ├── tunnel/             # Étapes du tunnel (Step0–Step8 + ResultsPage)
+│   └── layout/             # Navbar, Footer
+├── lib/
+│   ├── vehicleData.ts      # Données véhicules (marques, modèles...)
+│   └── pricingEngine.ts    # Moteur de calcul tarifaire
+├── store/
+│   └── tunnelStore.ts      # État global du tunnel (Zustand)
+├── types/
+│   └── tunnel.ts           # Types TypeScript
+└── prisma/
+    └── schema.prisma       # Schéma base de données
+```
+
+---
+
+## Phases de développement
+
+| Phase | Statut | Description |
+|-------|--------|-------------|
+| Phase 1 | Terminé | Setup, design system, landing page |
+| Phase 2 | Terminé | Tunnel de questions (9 étapes) |
+| Phase 3 | Terminé | Moteur de calcul + page résultats |
+| Phase 4 | A venir | Authentification (User + Company + Admin) |
+| Phase 5 | A venir | Dashboard Admin complet |
+| Phase 6 | A venir | Dashboard Entreprise + QR code |
+| Phase 7 | A venir | Système d'affiliation + Tracking |
+| Phase 8 | A venir | RGPD + Tests (Jest + Playwright) |
+| Phase 9 | A venir | SEO + Performance |
+| Phase 10 | A venir | Déploiement Vercel + Production |
+
+---
+
+## Design System
+
+### Couleurs
+- Or (accent) : #C9A84C
+- Or clair : #F5E6C8
+- Bordure or : #E5D8BC
+- Texte principal : #1A1A1A
+- Texte secondaire : #6B7280
+
+### Typographie
+- Titres : Playfair Display (serif)
+- Corps : Inter (sans-serif)
+- Prix : JetBrains Mono
+
+---
+
+## Avertissement légal
+
+BearsCheck est un comparateur d'information, pas un assureur ni un courtier.
+Les tarifs affichés sont des estimations indicatives calculées à partir de données de marché.
+Ils ne constituent pas des devis contractuels.
+
+---
+
+## Tests
+
+```bash
+# Tests unitaires
+npm run test
+
+# Tests E2E
+npx playwright test
+```
+
+---
+
+## Déploiement (Vercel)
+
+1. Connectez votre dépôt GitHub à Vercel
+2. Ajoutez les variables d'environnement dans le dashboard Vercel
+3. Configurez PostgreSQL (Supabase recommandé)
+4. Déployez avec `git push`

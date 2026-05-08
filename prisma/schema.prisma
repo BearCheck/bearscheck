@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  name          String?
+  password      String?
+  role          Role         @default(USER)
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  comparisons   Comparison[]
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Company {
+  id              String           @id @default(cuid())
+  raisonSociale   String
+  siret           String           @unique
+  email           String           @unique
+  emailPro        String?
+  telephone       String?
+  adresse         String?
+  nomResponsable  String?
+  password        String
+  status          CompanyStatus    @default(PENDING)
+  affiliateCode   String           @unique
+  qrCodeUrl       String?
+  commissionRate  Float            @default(0)
+  ribIban         String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  commissions     Commission[]
+  affiliateEvents AffiliateEvent[]
+}
+
+model Comparison {
+  id            String   @id @default(cuid())
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id])
+  formData      Json
+  results       Json
+  affiliateCode String?
+  completed     Boolean  @default(false)
+  converted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model AffiliateEvent {
+  id            String    @id @default(cuid())
+  companyId     String
+  company       Company   @relation(fields: [companyId], references: [id])
+  type          EventType
+  ipHash        String?
+  userAgent     String?
+  createdAt     DateTime  @default(now())
+}
+
+model Commission {
+  id          String           @id @default(cuid())
+  companyId   String
+  company     Company          @relation(fields: [companyId], references: [id])
+  amount      Float
+  status      CommissionStatus @default(PENDING)
+  description String?
+  paidAt      DateTime?
+  createdAt   DateTime         @default(now())
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  ipHash    String?
+  userAgent String?
+  refCode   String?
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  USER
+  COMPANY_ADMIN
+  ADMIN
+}
+
+enum CompanyStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum EventType {
+  SCAN
+  COMPARISON
+  CONVERSION_INTENT
+}
+
+enum CommissionStatus {
+  PENDING
+  IN_PROGRESS
+  PAID
+}
