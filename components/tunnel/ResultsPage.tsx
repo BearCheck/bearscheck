@@ -3,23 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Trophy, Star, Check } from "lucide-react";
+
 import { useTunnelStore } from "@/store/tunnelStore";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import type { InsuranceResult } from "@/types/tunnel";
-
-function StarRating({ score }: { score: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} className={`h-3.5 w-3.5 ${i < Math.round(score) ? "text-[#C9A84C]" : "text-[#E5D8BC]"}`} fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
-    </div>
-  );
-}
 
 function ResultCard({ result, onExpand, isExpanded, affiliateCode }: { result: InsuranceResult; onExpand: () => void; isExpanded: boolean; affiliateCode?: string }) {
   function handleSouscrire() {
@@ -52,12 +41,6 @@ function ResultCard({ result, onExpand, isExpanded, affiliateCode }: { result: I
               {result.badge === "best_value" && <Badge variant="gold"><Star className="h-3 w-3" /> Meilleur rapport</Badge>}
             </div>
             <p className="text-xs text-[#6B7280] mt-0.5">{result.formule}</p>
-            {result.satisfaction && (
-              <div className="flex items-center gap-1.5 mt-1">
-                <StarRating score={result.satisfaction} />
-                <span className="text-xs text-[#6B7280]">{result.satisfaction.toFixed(1)}/5</span>
-              </div>
-            )}
           </div>
         </div>
 

@@ -3,8 +3,7 @@ import type { ReactNode } from "react";
 import JsonLd from "@/components/seo/JsonLd";
 import {
   Car, UserRound, BarChart3, CheckCircle2,
-  ShieldCheck, Zap, Target, Smartphone, Award, MessageCircle,
-  TrendingDown, Globe,
+  ShieldCheck, Zap, Target, Smartphone, Award, MessageCircle, Globe,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -15,7 +14,6 @@ import { BearImage } from "@/components/ui/BearLogo";
 
 interface Step { step: string; title: string; description: string; icon: ReactNode }
 interface Advantage { icon: ReactNode; title: string; desc: string }
-interface Testimonial { name: string; location: string; text: string; stars: number; saving: string }
 
 const STEPS: Step[] = [
   { step: "1", title: "Renseignez votre véhicule", description: "Marque, modèle, année, carburant. 2 minutes suffisent.", icon: <Car className="h-8 w-8 text-white" /> },
@@ -33,23 +31,6 @@ const ADVANTAGES: Advantage[] = [
   { icon: <MessageCircle className="h-5 w-5 text-[#C9A84C]" />, title: "Support dédié", desc: "Une question ? Notre équipe répond sous 24h." },
 ];
 
-const TESTIMONIALS: Testimonial[] = [
-  { name: "Marie L.", location: "Lyon", text: "J'ai économisé 340€ par an en changeant d'assureur grâce à BearsCheck. Simple et rapide !", stars: 5, saving: "340€/an" },
-  { name: "Thomas D.", location: "Paris", text: "Interface claire, comparaison honnête. J'ai trouvé une formule tous risques moins chère que mon ancienne tiers.", stars: 5, saving: "180€/an" },
-  { name: "Sophie M.", location: "Bordeaux", text: "Très facile à utiliser, même pour moi qui n'y connais rien en assurance. Je recommande !", stars: 5, saving: "220€/an" },
-];
-
-function StarRating({ count }: { count: number }) {
-  return (
-    <div className="flex gap-0.5" aria-label={`${count} étoiles sur 5`}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} className={`h-4 w-4 ${i < count ? "text-[#C9A84C]" : "text-[#E5D8BC]"}`} fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
-    </div>
-  );
-}
 
 export default function HomePage() {
   const BASE_URL = process.env.AUTH_URL ?? "https://bearscheck.fr";
@@ -201,7 +182,7 @@ export default function HomePage() {
                     { value: "14", label: "Assureurs comparés" },
                     { value: "2 min", label: "Pour comparer" },
                     { value: "500€", label: "Économie moyenne" },
-                    { value: "4.8 / 5", label: "Satisfaction" },
+                    { value: "Gratuit", label: "Sans engagement" },
                   ].map((stat, i) => (
                     <Card key={stat.label} className="text-center py-3 px-2 card-lift count-up" style={{ animationDelay: `${0.4 + i * 0.1}s` }}>
                       <p className="text-xl font-bold text-[#C9A84C] font-[family-name:var(--font-jetbrains)]">{stat.value}</p>
@@ -277,37 +258,6 @@ export default function HomePage() {
                   <div>
                     <h3 className="font-semibold text-[#1A1A1A] mb-1">{adv.title}</h3>
                     <p className="text-sm text-[#6B7280]">{adv.desc}</p>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ===== TESTIMONIALS ===== */}
-        <section className="py-16 sm:py-24 bg-[#FAFAFA]">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="text-center mb-12">
-              <Badge variant="gold" className="mb-3">Avis clients</Badge>
-              <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mt-2">Ils ont économisé avec BearsCheck</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {TESTIMONIALS.map((t) => (
-                <Card key={t.name} className="flex flex-col gap-4 card-lift">
-                  <div className="flex items-center justify-between">
-                    <StarRating count={t.stars} />
-                    <Badge variant="success">
-                      <TrendingDown className="h-3 w-3" />
-                      {t.saving}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-[#6B7280] leading-relaxed flex-1">&ldquo;{t.text}&rdquo;</p>
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-[#C9A84C] flex items-center justify-center text-white text-xs font-bold">{t.name[0]}</div>
-                    <div>
-                      <p className="text-sm font-medium text-[#1A1A1A]">{t.name}</p>
-                      <p className="text-xs text-[#6B7280]">{t.location}</p>
-                    </div>
                   </div>
                 </Card>
               ))}
