@@ -3,6 +3,7 @@ import { Building2, Clock, CheckCircle2, XCircle, Filter } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import CompanyActions from "./CompanyActions";
+import QRModal from "./QRModal";
 
 async function getCompanies() {
   try {
@@ -89,7 +90,7 @@ export default async function EntreprisesPage() {
             <table className="w-full">
               <thead>
                 <tr className="bg-[#F8FAFC]">
-                  {["Entreprise", "SIRET", "Email", "Code affilié", "Scans", "Statut", "Actions"].map((h) => (
+                  {["Entreprise", "SIRET", "Email", "Code affilié", "Scans", "Statut", "QR", "Actions"].map((h) => (
                     <th key={h} className="text-left text-xs font-semibold text-[#64748B] uppercase tracking-wide px-5 py-3 whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -122,6 +123,9 @@ export default async function EntreprisesPage() {
                           <StatusIcon className="h-3 w-3" />
                           {cfg.label}
                         </span>
+                      </td>
+                      <td className="px-5 py-3">
+                        <QRModal companyId={c.id} raisonSociale={c.raisonSociale} />
                       </td>
                       <td className="px-5 py-3">
                         <CompanyActions companyId={c.id} status={c.status} compact />
