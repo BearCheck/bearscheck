@@ -7,9 +7,26 @@ import Input from "@/components/ui/Input";
 import { useTunnelStore } from "@/store/tunnelStore";
 import { calculateQuotes } from "@/lib/pricingEngine";
 
+function getPasswordStrength(pwd: string): number {
+  let score = 0;
+  if (pwd.length >= 8) score++;
+  if (pwd.length >= 12) score++;
+  if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+  if (/[0-9]/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
+  return score;
+}
+
+const STRENGTH_LABELS = ["Très faible", "Très faible", "Faible", "Moyen", "Fort", "Très fort"];
+const STRENGTH_COLORS = ["bg-red-500", "bg-red-500", "bg-orange-400", "bg-amber-400", "bg-green-500", "bg-green-600"];
+const STRENGTH_TEXT = ["text-red-500", "text-red-500", "text-orange-500", "text-amber-500", "text-green-600", "text-green-700"];
+
 export default function Step8Contact() {
   const { formData, updateFormData, setResults, setCalculating, nextStep, prevStep } = useTunnelStore();
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const pwdStrength = formData.password ? getPasswordStrength(formData.password) : 0;
+  const pwdEntered = (formData.password?.length ?? 0) > 0;
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -19,6 +36,9 @@ export default function Step8Contact() {
       newErrors.email = "Adresse email invalide";
     }
     if (!formData.prenom) newErrors.prenom = "Le prénom est obligatoire";
+    if (formData.password && formData.password.length > 0 && getPasswordStrength(formData.password) < 4) {
+      newErrors.password = "Le mot de passe doit être au moins Fort pour créer un compte";
+    }
     if (!formData.rgpdConsent) newErrors.rgpd = "Vous devez accepter la politique de confidentialité";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -39,6 +59,14 @@ export default function Step8Contact() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ formData, results, affiliateCode: formData.affiliateCode }),
     }).catch(() => {});
+
+    if (formData.password && formData.password.length >= 8) {
+      fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, password: formData.password, name: formData.prenom }),
+      }).catch(() => {});
+    }
   };
 
   return (
@@ -89,8 +117,37 @@ export default function Step8Contact() {
             value={formData.password ?? ""}
             autoComplete="new-password"
             hint="Optionnel — créez un compte pour retrouver vos devis plus tard"
-            onChange={(e) => updateFormData({ password: e.target.value })}
+            error={errors.password}
+            onChange={(e) => {
+              updateFormData({ password: e.target.value });
+              setErrors((prev) => ({ ...prev, password: "" }));
+            }}
           />
+          {pwdEntered && (
+            <div className="px-0.5">
+              <div className="flex gap-1 mb-1">
+                {[1, 2, 3, 4, 5].map((level) => (
+                  <div
+                    key={level}
+                    className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                      level <= pwdStrength ? STRENGTH_COLORS[pwdStrength] : "bg-[#E5D8BC]"
+                    }`}
+                  />
+                ))}
+              </div>
+              <div className="flex items-center justify-between">
+                <p className={`text-xs font-medium ${STRENGTH_TEXT[pwdStrength]}`}>
+                  {STRENGTH_LABELS[pwdStrength]}
+                </p>
+                {pwdStrength < 4 && (
+                  <p className="text-xs text-[#9CA3AF]">Ajoutez majuscules, chiffres, symboles</p>
+                )}
+                {pwdStrength >= 4 && (
+                  <p className="text-xs text-green-600">✓ Mot de passe accepté</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">

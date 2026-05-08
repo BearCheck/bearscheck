@@ -109,28 +109,24 @@ export default function CommentCaMarchePage() {
 
         <section className="py-16 bg-[#FAFAFA]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6">
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-0">
               {STEPS.map((step, index) => (
                 <div key={step.step} className="flex gap-6 sm:gap-8">
                   <div className="flex flex-col items-center">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#C9A84C] shadow-md">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#C9A84C] shadow-md mt-6">
                       {step.icon}
                     </div>
                     {index < STEPS.length - 1 && (
-                      <div className="w-0.5 bg-[#E5D8BC]" style={{ flexGrow: 1, minHeight: "32px", marginTop: "8px", marginBottom: "8px" }} />
+                      <div className="w-0.5 bg-[#E5D8BC] flex-1 min-h-[16px] mt-2 mb-0" />
                     )}
                   </div>
-                  <Card className="flex-1 mb-2 p-6">
-                    <div className="flex items-start justify-between gap-4 flex-wrap">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <Badge variant="gold">Étape {step.step}</Badge>
-                          <Badge variant="neutral">{step.duration}</Badge>
-                        </div>
-                        <h2 className="text-lg font-bold text-[#1A1A1A] mb-2">{step.title}</h2>
-                        <p className="text-sm text-[#6B7280] leading-relaxed">{step.description}</p>
-                      </div>
+                  <Card className="flex-1 my-3 p-6 flex flex-col justify-center min-h-[120px]">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Badge variant="gold">Étape {step.step}</Badge>
+                      <Badge variant="neutral">{step.duration}</Badge>
                     </div>
+                    <h2 className="text-lg font-bold text-[#1A1A1A] mb-2">{step.title}</h2>
+                    <p className="text-sm text-[#6B7280] leading-relaxed">{step.description}</p>
                   </Card>
                 </div>
               ))}

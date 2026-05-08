@@ -4,7 +4,6 @@ import { useState } from "react";
 import { CheckCircle2, Circle, AlertTriangle, AlertOctagon } from "lucide-react";
 import StepWrapper from "./StepWrapper";
 import OptionCard from "@/components/ui/OptionCard";
-import Slider from "@/components/ui/Slider";
 import { useTunnelStore } from "@/store/tunnelStore";
 
 const SINISTRES = [
@@ -55,40 +54,72 @@ export default function Step4Historique() {
             </div>
           )}
 
-          <div className="flex items-center justify-center mb-3">
-            <div className={`px-6 py-2 rounded-2xl text-center ${
-              bm <= 0.80 ? "bg-green-50 border border-green-200" :
-              bm <= 1.00 ? "bg-[#F5E6C8] border border-[#E5D8BC]" :
-              bm <= 1.50 ? "bg-orange-50 border border-orange-200" :
-              "bg-red-50 border border-red-200"
+          {/* Zone bar + draggable range */}
+          <div className="relative h-10 flex items-center mb-3 select-none">
+            <div className="absolute inset-x-0 h-4 rounded-full flex overflow-hidden shadow-inner">
+              {/* Green 0.50→0.80 = 10% */}
+              <div className="bg-gradient-to-r from-green-500 to-green-400" style={{ width: "10%" }} />
+              {/* Gold 0.80→1.00 = 6.7% */}
+              <div className="bg-gradient-to-r from-[#C9A84C] to-[#D4AA50]" style={{ width: "6.7%" }} />
+              {/* Orange 1.00→1.50 = 16.7% */}
+              <div className="bg-gradient-to-r from-orange-400 to-orange-500" style={{ width: "16.7%" }} />
+              {/* Red 1.50→3.50 = 66.6% */}
+              <div className="bg-gradient-to-r from-orange-600 to-red-600 flex-1" />
+            </div>
+            {/* Thumb */}
+            <div
+              className="absolute w-7 h-7 rounded-full bg-white shadow-lg border-[3px] -translate-x-1/2 transition-all duration-75 pointer-events-none z-10"
+              style={{
+                left: `${((bm * 100 - 50) / 300) * 100}%`,
+                borderColor:
+                  bm <= 0.80 ? "#22c55e" :
+                  bm <= 1.00 ? "#C9A84C" :
+                  bm <= 1.50 ? "#f97316" : "#ef4444",
+              }}
+            />
+            {/* Overlay range input */}
+            <input
+              type="range"
+              min={50}
+              max={350}
+              step={5}
+              value={Math.round(bm * 100)}
+              onChange={(e) => updateFormData({ bonusMalus: Number(e.target.value) / 100 })}
+              className="absolute inset-0 w-full opacity-0 cursor-pointer"
+              aria-label="Coefficient bonus-malus"
+            />
+          </div>
+
+          {/* Value display */}
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <p className={`text-5xl font-bold font-[family-name:var(--font-jetbrains)] ${
+              bm <= 0.80 ? "text-green-600" :
+              bm <= 1.00 ? "text-[#C9A84C]" :
+              bm <= 1.50 ? "text-orange-500" :
+              "text-red-600"
             }`}>
-              <p className={`text-3xl font-bold font-[family-name:var(--font-jetbrains)] ${
-                bm <= 0.80 ? "text-green-600" :
-                bm <= 1.00 ? "text-[#C9A84C]" :
-                bm <= 1.50 ? "text-orange-500" :
-                "text-red-600"
-              }`}>
-                {bm.toFixed(2)}
-              </p>
-              <p className={`text-xs font-medium mt-0.5 ${
+              {bm.toFixed(2)}
+            </p>
+            <div className="flex flex-col">
+              <span className={`text-sm font-bold ${
                 bm <= 0.80 ? "text-green-600" :
                 bm <= 1.00 ? "text-[#C9A84C]" :
                 bm <= 1.50 ? "text-orange-500" :
                 "text-red-600"
               }`}>
                 {bm < 1.00 ? "Bonus" : bm === 1.00 ? "Neutre" : "Malus"}
-              </p>
+              </span>
+              <span className="text-xs text-[#9CA3AF]">
+                {bm < 1.00
+                  ? `−${Math.round((1 - bm) * 100)} % sur la prime`
+                  : bm > 1.00
+                  ? `+${Math.round((bm - 1) * 100)} % sur la prime`
+                  : "prime de base"}
+              </span>
             </div>
           </div>
 
-          <Slider
-            min={50}
-            max={350}
-            step={5}
-            value={Math.round(bm * 100)}
-            onChange={(e) => updateFormData({ bonusMalus: Number(e.target.value) / 100 })}
-          />
-          <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
+          <div className="flex justify-between text-xs text-[#9CA3AF]">
             <span>0.50 — Bonus max</span>
             <span>1.00 — Neutre</span>
             <span>3.50 — Malus max</span>
