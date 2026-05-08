@@ -138,7 +138,7 @@ export default function HomePage() {
                 </h1>
                 <p className="fade-up fade-up-3 text-lg sm:text-xl text-[#6B7280] mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                   Comparez les offres des principales assurances françaises et économisez jusqu&apos;à{" "}
-                  <strong className="text-[#1A1A1A]">500€ par an</strong>.
+                  <strong className="text-[#1A1A1A]">437€ par an</strong>.
                 </p>
                 <div className="fade-up fade-up-4 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                   <Link href="/comparer">
@@ -181,7 +181,7 @@ export default function HomePage() {
                   {[
                     { value: "14", label: "Assureurs comparés" },
                     { value: "2 min", label: "Pour comparer" },
-                    { value: "500€", label: "Économie moyenne" },
+                    { value: "437€", label: "Économisés en moyenne/an" },
                     { value: "Gratuit", label: "Sans engagement" },
                   ].map((stat, i) => (
                     <Card key={stat.label} className="text-center py-3 px-2 card-lift count-up" style={{ animationDelay: `${0.4 + i * 0.1}s` }}>
