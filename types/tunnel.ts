@@ -5,6 +5,7 @@ export interface TunnelFormData {
   // Étape 1 — Véhicule
   marque?: string;
   modele?: string;
+  finition?: string;
   annee?: number;
   carburant?: "essence" | "diesel" | "hybride" | "electrique" | "gpl";
   puissanceFiscale?: number;

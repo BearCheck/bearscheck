@@ -5,7 +5,7 @@ import StepWrapper from "./StepWrapper";
 import Select from "@/components/ui/Select";
 import Slider from "@/components/ui/Slider";
 import { useTunnelStore } from "@/store/tunnelStore";
-import { MARQUES_VOITURE, getModelesForMarque, CARBURANTS } from "@/lib/vehicleData";
+import { MARQUES_VOITURE, getModelesForMarque, getFinitionsForModele, CARBURANTS } from "@/lib/vehicleData";
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = Array.from({ length: CURRENT_YEAR - 1969 }, (_, i) => {
@@ -27,6 +27,9 @@ export default function Step1Vehicule() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const modeles = formData.marque ? getModelesForMarque(formData.marque) : [];
+  const finitions = (formData.marque && formData.modele)
+    ? getFinitionsForModele(formData.marque, formData.modele)
+    : [];
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -58,7 +61,7 @@ export default function Step1Vehicule() {
           options={MARQUES_VOITURE.map((m) => ({ value: m, label: m }))}
           error={errors.marque}
           onChange={(e) => {
-            updateFormData({ marque: e.target.value, modele: undefined });
+            updateFormData({ marque: e.target.value, modele: undefined, finition: undefined });
             setErrors((prev) => ({ ...prev, marque: "" }));
           }}
         />
@@ -74,10 +77,20 @@ export default function Step1Vehicule() {
           disabled={!formData.marque}
           error={errors.modele}
           onChange={(e) => {
-            updateFormData({ modele: e.target.value });
+            updateFormData({ modele: e.target.value, finition: undefined });
             setErrors((prev) => ({ ...prev, modele: "" }));
           }}
         />
+
+        {finitions.length > 0 && (
+          <Select
+            label="Finition"
+            placeholder="Sélectionnez une finition (optionnel)"
+            value={formData.finition ?? ""}
+            options={[...finitions, "Autre"].map((f) => ({ value: f, label: f }))}
+            onChange={(e) => updateFormData({ finition: e.target.value || undefined })}
+          />
+        )}
 
         <Select
           label="Année de mise en circulation"
