@@ -8,6 +8,7 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { BearImage } from "@/components/ui/BearLogo";
+import ChangePasswordCard from "./ChangePasswordCard";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -64,7 +65,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Empty state */}
-          <Card className="text-center py-12">
+          <Card className="text-center py-12 mb-6">
             <BearImage height={80} className="mx-auto mb-4 opacity-60" />
             <Badge variant="neutral" className="mb-3">Aucune comparaison</Badge>
             <h2 className="text-lg font-bold text-[#1A1A1A] mb-2">Commencez à comparer</h2>
@@ -75,6 +76,9 @@ export default async function DashboardPage() {
               <Button size="md" className="shadow-sm">Lancer une comparaison →</Button>
             </Link>
           </Card>
+
+          {/* Paramètres du compte */}
+          <ChangePasswordCard />
         </div>
       </main>
       <Footer />
