@@ -176,11 +176,11 @@ export default function Step8Contact() {
             </div>
             <span className="text-sm text-[#6B7280] leading-relaxed">
               J&apos;accepte la{" "}
-              <a href="/politique-confidentialite" target="_blank" className="text-[#C9A84C] underline hover:no-underline">
+              <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" className="text-[#C9A84C] underline hover:no-underline">
                 politique de confidentialité
               </a>{" "}
               et les{" "}
-              <a href="/cgu" target="_blank" className="text-[#C9A84C] underline hover:no-underline">
+              <a href="/cgu" target="_blank" rel="noopener noreferrer" className="text-[#C9A84C] underline hover:no-underline">
                 CGU de BearsCheck
               </a>
               . *

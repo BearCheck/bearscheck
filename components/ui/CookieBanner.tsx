@@ -108,7 +108,7 @@ export default function CookieBanner() {
             <p className="text-sm text-[#6B7280] mb-4 leading-relaxed">
               Nous utilisons des cookies pour faire fonctionner le site et améliorer votre expérience.
               Configurez vos préférences ci-dessous.{" "}
-              <Link href="/politique-confidentialite" className="text-[#C9A84C] hover:underline" target="_blank">
+              <Link href="/politique-confidentialite" className="text-[#C9A84C] hover:underline" target="_blank" rel="noopener noreferrer">
                 Politique de confidentialité
               </Link>
             </p>
@@ -179,7 +179,7 @@ export default function CookieBanner() {
               <p className="font-semibold text-[#1A1A1A] text-sm mb-1">Nous utilisons des cookies</p>
               <p className="text-xs text-[#6B7280] leading-relaxed">
                 Des cookies nécessaires, analytiques et d&apos;affiliation sont utilisés pour améliorer votre expérience et mesurer notre audience.{" "}
-                <Link href="/politique-confidentialite" className="text-[#C9A84C] hover:underline" target="_blank">
+                <Link href="/politique-confidentialite" className="text-[#C9A84C] hover:underline" target="_blank" rel="noopener noreferrer">
                   En savoir plus
                 </Link>
               </p>
