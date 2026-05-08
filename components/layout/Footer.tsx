@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import BearLogo from "@/components/ui/BearLogo";
 
@@ -72,6 +74,14 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  onClick={() => { localStorage.removeItem("bc-cookie-consent"); window.location.reload(); }}
+                  className="text-sm text-[#6B7280] hover:text-[#C9A84C] transition-colors text-left"
+                >
+                  Gérer les cookies
+                </button>
+              </li>
             </ul>
           </div>
         </div>
