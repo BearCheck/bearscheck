@@ -143,3 +143,17 @@ enum CommissionStatus {
   IN_PROGRESS
   PAID
 }
+
+model SecurityLog {
+  id        String   @id @default(cuid())
+  type      String
+  userId    String?
+  ip        String?
+  userAgent String?
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([userId])
+  @@index([createdAt])
+}

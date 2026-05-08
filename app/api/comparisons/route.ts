@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { rateLimiters, getIP, applyRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  const ip = getIP(req);
+  const limited = await applyRateLimit(rateLimiters.comparateur, ip);
+  if (limited) return limited;
+
   try {
     const body = await req.json();
     const { formData, results, affiliateCode } = body;

@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { hashPassword } from "@/lib/auth-utils";
 import { randomBytes } from "crypto";
+import { rateLimiters, getIP, applyRateLimit } from "@/lib/rate-limit";
+import { proRegisterSchema } from "@/lib/validations";
+import { logSecurityEvent } from "@/lib/security-logs";
 
 function generateAffiliateCode(raisonSociale: string): string {
   const prefix = raisonSociale.replace(/\s+/g, "").toUpperCase().slice(0, 4);
@@ -10,8 +13,20 @@ function generateAffiliateCode(raisonSociale: string): string {
 }
 
 export async function POST(req: Request) {
+  const ip = getIP(req);
+  const limited = await applyRateLimit(rateLimiters.inscription, ip);
+  if (limited) return limited;
+
   try {
     const body = await req.json();
+    const parsed = proRegisterSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? "Données invalides" },
+        { status: 400 }
+      );
+    }
+
     const {
       raisonSociale,
       siret,
@@ -21,30 +36,7 @@ export async function POST(req: Request) {
       nomResponsable,
       prenomResponsable,
       password,
-    } = body as {
-      raisonSociale: string;
-      siret: string;
-      email: string;
-      telephone?: string;
-      adresse?: string;
-      nomResponsable?: string;
-      prenomResponsable?: string;
-      password: string;
-    };
-
-    if (!raisonSociale || !siret || !email || !password) {
-      return NextResponse.json(
-        { error: "Champs obligatoires manquants" },
-        { status: 400 }
-      );
-    }
-
-    if (!/^\d{14}$/.test(siret)) {
-      return NextResponse.json(
-        { error: "Le SIRET doit contenir 14 chiffres" },
-        { status: 400 }
-      );
-    }
+    } = parsed.data;
 
     const existing = await prisma.company.findFirst({
       where: { OR: [{ email }, { siret }] },
@@ -56,23 +48,25 @@ export async function POST(req: Request) {
       );
     }
 
-    const hashed = await bcrypt.hash(password, 12);
+    const hashed = await hashPassword(password);
     const affiliateCode = generateAffiliateCode(raisonSociale);
     const fullName = [prenomResponsable, nomResponsable].filter(Boolean).join(" ");
 
-    await prisma.company.create({
+    const company = await prisma.company.create({
       data: {
         raisonSociale,
         siret,
         email,
-        telephone: telephone ?? null,
-        adresse: adresse ?? null,
+        telephone: telephone || null,
+        adresse: adresse || null,
         nomResponsable: fullName || null,
         password: hashed,
         affiliateCode,
         status: "PENDING",
       },
     });
+
+    await logSecurityEvent("ACCOUNT_CREATED", { ip, metadata: { type: "pro", companyId: company.id } });
 
     return NextResponse.json(
       { success: true, message: "Demande envoyée. Validation sous 24-48h." },

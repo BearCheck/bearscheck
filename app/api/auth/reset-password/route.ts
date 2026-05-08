@@ -1,12 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { hashPassword } from "@/lib/auth-utils";
+import { rateLimiters, getIP, applyRateLimit } from "@/lib/rate-limit";
+import { resetPasswordSchema } from "@/lib/validations";
 
 export async function POST(req: NextRequest) {
+  const ip = getIP(req);
+  const limited = await applyRateLimit(rateLimiters.auth, ip);
+  if (limited) return limited;
+
   try {
-    const { token, password } = await req.json();
-    if (!token || !password) return NextResponse.json({ error: "Données manquantes" }, { status: 400 });
-    if (password.length < 8) return NextResponse.json({ error: "Mot de passe trop court" }, { status: 400 });
+    const body = await req.json();
+    const parsed = resetPasswordSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? "Données invalides" },
+        { status: 400 }
+      );
+    }
+
+    const { token, password } = parsed.data;
 
     const user = await prisma.user.findFirst({
       where: {
@@ -19,7 +32,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Lien invalide ou expiré" }, { status: 400 });
     }
 
-    const hashed = await bcrypt.hash(password, 12);
+    const hashed = await hashPassword(password);
 
     await prisma.user.update({
       where: { id: user.id },
