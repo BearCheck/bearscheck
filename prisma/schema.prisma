@@ -157,3 +157,128 @@ model SecurityLog {
   @@index([userId])
   @@index([createdAt])
 }
+
+// ─── GESTION FINANCIÈRE ───────────────────────────
+
+model Expense {
+  id           String          @id @default(cuid())
+  titre        String
+  montant      Float
+  categorie    ExpenseCategory
+  type         ExpenseType
+  recurrent    Boolean         @default(false)
+  dateDepense  DateTime
+  description  String?
+  justificatif String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Revenue {
+  id          String   @id @default(cuid())
+  titre       String
+  montant     Float
+  source      String
+  dateRevenu  DateTime
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model TaxDeclaration {
+  id              String    @id @default(cuid())
+  trimestre       Int
+  annee           Int
+  chiffreAffaires Float
+  cotisations     Float
+  dateLimite      DateTime
+  datePaiement    DateTime?
+  statut          TaxStatus @default(A_PAYER)
+  createdAt       DateTime  @default(now())
+}
+
+// ─── CALENDRIER ──────────────────────────────────
+
+model CalendarEvent {
+  id          String        @id @default(cuid())
+  titre       String
+  description String?
+  dateDebut   DateTime
+  dateFin     DateTime?
+  allDay      Boolean       @default(false)
+  couleur     String        @default("#C9A84C")
+  categorie   EventCategory
+  rappel      Int?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+// ─── ROADMAP ─────────────────────────────────────
+
+model RoadmapTask {
+  id           String        @id @default(cuid())
+  titre        String
+  description  String?
+  statut       TaskStatus    @default(A_FAIRE)
+  priorite     Priority      @default(MOYENNE)
+  dateDebut    DateTime?
+  dateFin      DateTime?
+  dureeEstimee Int?
+  progression  Int           @default(0)
+  ordre        Int           @default(0)
+  parentId     String?
+  parent       RoadmapTask?  @relation("SubTasks", fields: [parentId], references: [id])
+  sousTaches   RoadmapTask[] @relation("SubTasks")
+  tags         String[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+// ─── ENUMS ───────────────────────────────────────
+
+enum ExpenseCategory {
+  HEBERGEMENT
+  DOMAINE
+  DOMICILIATION
+  MARKETING
+  LOGICIELS
+  FORMATION
+  COMPTABILITE
+  ASSURANCE
+  ORIAS
+  AUTRE
+}
+
+enum ExpenseType {
+  MENSUEL
+  EXCEPTIONNEL
+}
+
+enum TaxStatus {
+  A_PAYER
+  PAYE
+  EN_RETARD
+}
+
+enum EventCategory {
+  REUNION
+  DEADLINE
+  ADMINISTRATIF
+  FISCAL
+  PERSONNEL
+  AUTRE
+}
+
+enum TaskStatus {
+  A_FAIRE
+  EN_COURS
+  EN_PAUSE
+  TERMINE
+  ANNULE
+}
+
+enum Priority {
+  CRITIQUE
+  HAUTE
+  MOYENNE
+  BASSE
+}

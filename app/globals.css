@@ -147,6 +147,33 @@ h2, h3 {
   animation: blobFloat 8s ease-in-out infinite;
 }
 
+/* ─── FullCalendar Admin Theme ─── */
+.calendar-admin .fc-toolbar-title {
+  color: #C9A84C !important;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 1.1rem !important;
+}
+.calendar-admin .fc-button-primary {
+  background-color: #C9A84C !important;
+  border-color: #C9A84C !important;
+  box-shadow: none !important;
+}
+.calendar-admin .fc-button-primary:hover {
+  background-color: #B8973B !important;
+  border-color: #B8973B !important;
+}
+.calendar-admin .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: #0F172A !important;
+  border-color: #0F172A !important;
+}
+.calendar-admin .fc-day-today {
+  background-color: #F5E6C8 !important;
+}
+.calendar-admin .fc-daygrid-day-number { color: #374151; font-size: 0.8rem; }
+.calendar-admin .fc-col-header-cell-cushion { color: #64748B; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+.calendar-admin .fc-event { border-radius: 6px !important; font-size: 0.75rem !important; padding: 1px 4px !important; cursor: pointer; }
+.calendar-admin { font-family: var(--font-inter), system-ui, sans-serif; }
+
 .blob-animate-slow {
   animation: blobFloat 12s ease-in-out infinite reverse;
 }

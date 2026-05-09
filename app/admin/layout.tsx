@@ -7,12 +7,18 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 import Link from "next/link";
-import { LayoutDashboard, Users, Building2, BarChart3, DollarSign, LogOut, ChevronRight } from "lucide-react";
+import { LayoutDashboard, Users, Building2, BarChart3, DollarSign, LogOut, ChevronRight, CreditCard, TrendingUp, CalendarDays, Map, Calculator } from "lucide-react";
 import { BearImage } from "@/components/ui/BearLogo";
 import { signOut } from "@/auth";
 
 const NAV = [
-  { href: "/admin", label: "Vue d'ensemble", icon: LayoutDashboard, exact: true },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/finances", label: "Finances", icon: CreditCard },
+  { href: "/admin/finances/depenses", label: "↳ Dépenses", icon: DollarSign, sub: true },
+  { href: "/admin/finances/revenus", label: "↳ Revenus", icon: TrendingUp, sub: true },
+  { href: "/admin/impots", label: "Impôts", icon: Calculator },
+  { href: "/admin/calendrier", label: "Calendrier", icon: CalendarDays },
+  { href: "/admin/roadmap", label: "Roadmap", icon: Map },
   { href: "/admin/entreprises", label: "Entreprises", icon: Building2 },
   { href: "/admin/utilisateurs", label: "Utilisateurs", icon: Users },
   { href: "/admin/comparaisons", label: "Comparaisons", icon: BarChart3 },
@@ -37,7 +43,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
+        <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5 overflow-y-auto">
           {NAV.map((item) => (
             <AdminNavLink key={item.href} {...item} />
           ))}
@@ -76,11 +82,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   );
 }
 
-function AdminNavLink({ href, label, icon: Icon, exact }: { href: string; label: string; icon: React.ComponentType<{ className?: string }>; exact?: boolean }) {
+function AdminNavLink({ href, label, icon: Icon, exact, sub }: { href: string; label: string; icon: React.ComponentType<{ className?: string }>; exact?: boolean; sub?: boolean }) {
+  void exact;
   return (
     <Link
       href={href}
-      className="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#94A3B8] hover:text-white hover:bg-white/8 transition-all text-sm font-medium"
+      className={`group flex items-center gap-3 px-3 py-2 rounded-lg text-[#94A3B8] hover:text-white hover:bg-white/8 transition-all font-medium ${sub ? "text-xs pl-5 opacity-80" : "text-sm"}`}
     >
       <Icon className="h-4 w-4 shrink-0" />
       <span className="flex-1">{label}</span>
