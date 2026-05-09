@@ -15,6 +15,7 @@ export interface TaskData {
   dureeEstimee: string;
   tags: string[];
   progression: number;
+  ordre?: number;
 }
 
 interface Props { isOpen: boolean; onClose: () => void; onSaved: () => void; initial?: TaskData }
